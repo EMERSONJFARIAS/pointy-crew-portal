@@ -41,16 +41,16 @@ export const loginSchema = z.object({
 
 export const resetPasswordSchema = z.object({
   cpf: z.string()
-    .regex(cpfRegex, "CPF inválido")
-    .refine(isValidCPF, "CPF inválido"),
+    .regex(cpfRegex, "CPF inválido. Formato esperado: 000.000.000-00")
+    .refine(isValidCPF, "CPF inválido. Verifique os dígitos."),
   username: z.string().min(3, "Nome de usuário deve ter pelo menos 3 caracteres")
 });
 
 export const registerSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   cpf: z.string()
-    .regex(cpfRegex, "CPF inválido")
-    .refine(isValidCPF, "CPF inválido"),
+    .regex(cpfRegex, "CPF inválido. Formato esperado: 000.000.000-00")
+    .refine(isValidCPF, "CPF inválido. Verifique os dígitos."),
   birthDate: z.date({
     required_error: "Data de nascimento é obrigatória",
   }),
