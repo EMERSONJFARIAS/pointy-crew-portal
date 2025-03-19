@@ -28,11 +28,11 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
       } else {
         setInputValue(value.toString());
       }
-    }, [value, mask]);
+    }, [value, mask, formatChars]);
     
     const formatValueWithMask = (value: string, mask: string, formatChars: Record<string, RegExp>): string => {
-      // Remove non-alphanumeric characters for processing
-      const rawValue = value.replace(/[^\w\s]/gi, '');
+      // Remove all non-digit characters for CPF processing
+      const rawValue = value.replace(/\D/g, '');
       let result = '';
       let rawIndex = 0;
       
@@ -49,10 +49,7 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
           }
         } else {
           result += maskChar;
-          // If the next character in rawValue matches the mask character, skip it
-          if (rawIndex < rawValue.length && rawValue[rawIndex] === maskChar) {
-            rawIndex++;
-          }
+          // Don't increment rawIndex for mask characters
         }
       }
       
@@ -68,21 +65,8 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
         return;
       }
       
-      // Remove mask characters to get the raw value
-      let rawValue = '';
-      let maskIndex = 0;
-      
-      for (let i = 0; i < newValue.length; i++) {
-        if (maskIndex < mask.length) {
-          const maskChar = mask[maskIndex];
-          if (maskChar in formatChars) {
-            if (formatChars[maskChar].test(newValue[i])) {
-              rawValue += newValue[i];
-            }
-          }
-          maskIndex++;
-        }
-      }
+      // Extract only digits from the input for CPF
+      const rawValue = newValue.replace(/\D/g, '');
       
       // Format the raw value according to the mask
       let formattedValue = '';
@@ -123,7 +107,7 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
       if (!mask) return;
       
       const pasteData = e.clipboardData.getData('text');
-      const rawValue = pasteData.replace(/[^\w\s]/gi, '');
+      const rawValue = pasteData.replace(/\D/g, ''); // Extract only digits for CPF
       
       if (rawValue) {
         e.preventDefault();
