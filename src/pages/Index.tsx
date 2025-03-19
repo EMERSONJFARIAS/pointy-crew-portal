@@ -38,7 +38,7 @@ export default function Index() {
       <header className="w-full py-4 px-6 border-b bg-white/50 backdrop-blur-sm fixed top-0 z-10">
         <div className="container max-w-screen-xl mx-auto flex items-center justify-between">
           <Link to="/" className="font-semibold text-xl tracking-tight text-primary transition-colors hover:text-primary/90">
-            TimePulse
+            Point Maker
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/login">
@@ -231,7 +231,7 @@ export default function Index() {
         <div className="container max-w-screen-xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             <div>
-              <h3 className="text-white text-lg font-semibold mb-4">TimePulse</h3>
+              <h3 className="text-white text-lg font-semibold mb-4">Point Maker</h3>
               <p className="text-gray-400">
                 Sistema de marcação de ponto moderno e intuitivo para empresas de todos os tamanhos.
               </p>
@@ -293,7 +293,7 @@ export default function Index() {
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; {new Date().getFullYear()} TimePulse. Todos os direitos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} Point Maker. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
