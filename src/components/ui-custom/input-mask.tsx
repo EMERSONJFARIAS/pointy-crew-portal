@@ -49,7 +49,6 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
           }
         } else {
           result += maskChar;
-          // Don't increment rawIndex for mask characters
         }
       }
       
@@ -65,7 +64,7 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
         return;
       }
       
-      // Extract only digits from the input for CPF
+      // Extract only digits from the input
       const rawValue = newValue.replace(/\D/g, '');
       
       // Format the raw value according to the mask
@@ -107,7 +106,7 @@ export const InputMask = forwardRef<HTMLInputElement, InputMaskProps>(
       if (!mask) return;
       
       const pasteData = e.clipboardData.getData('text');
-      const rawValue = pasteData.replace(/\D/g, ''); // Extract only digits for CPF
+      const rawValue = pasteData.replace(/\D/g, ''); // Extract only digits
       
       if (rawValue) {
         e.preventDefault();
