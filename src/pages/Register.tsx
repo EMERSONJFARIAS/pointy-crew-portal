@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
+import { format, parse, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { BriefcaseIcon, CalendarIcon, EyeIcon, EyeOffIcon, KeyIcon, UserIcon } from "lucide-react";
 import { RegisterFormData, registerSchema } from "@/lib/validators";
@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [dateInputValue, setDateInputValue] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -56,6 +58,21 @@ export default function Register() {
       // Redirect to login
       navigate("/login");
     }, 1500);
+  };
+
+  // Handle manual date input
+  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: any) => {
+    const value = e.target.value;
+    setDateInputValue(value);
+    
+    // Try to parse the date in DD/MM/YYYY format
+    if (value.length === 10) {
+      const parsedDate = parse(value, "dd/MM/yyyy", new Date());
+      
+      if (isValid(parsedDate)) {
+        field.onChange(parsedDate);
+      }
+    }
   };
 
   return (
@@ -107,30 +124,40 @@ export default function Register() {
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Data de Nascimento</FormLabel>
-                  <Popover>
+                  <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
-                          ) : (
-                            <span>Selecione uma data</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
+                        <div className="relative">
+                          <Input
+                            placeholder="DD/MM/AAAA"
+                            value={dateInputValue || (field.value ? format(field.value, "dd/MM/yyyy") : "")}
+                            onChange={(e) => handleDateInputChange(e, field)}
+                            className="pl-3 pr-10"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2"
+                            onClick={() => setIsCalendarOpen(true)}
+                          >
+                            <CalendarIcon className="h-4 w-4 opacity-50" />
+                            <span className="sr-only">Abrir calendário</span>
+                          </Button>
+                        </div>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={(date) => {
+                          field.onChange(date);
+                          if (date) {
+                            setDateInputValue(format(date, "dd/MM/yyyy"));
+                          }
+                          setIsCalendarOpen(false);
+                        }}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1920-01-01")
                         }
